@@ -2,6 +2,28 @@
 
 MKDIR="mkdir -p"
 
+if [ -z "${IONCUBE_LOADER}" ] || [ -z "${IONCUBE_ZEND_MANAGER}" ] || [ -z "${IONCUBE_ZEND_OPTIMIZER}" ]; then
+        ROOT_DIR=`pwd`
+        case "${ROOT_DIR}" in
+                [A-Za-z]:/*)
+                        BASE_PATH="${ROOT_DIR}"
+                        ;;
+                /[A-Za-z]/*)
+                        DRIVE=`printf '%s\n' "${ROOT_DIR}" | cut -c2 | tr '[:lower:]' '[:upper:]'`
+                        REST=`printf '%s\n' "${ROOT_DIR}" | cut -c4-`
+                        BASE_PATH="${DRIVE}:/${REST}"
+                        ;;
+                *)
+                        BASE_PATH="${ROOT_DIR}"
+                        ;;
+        esac
+
+        : "${IONCUBE_LOADER:=${BASE_PATH}/ioncube/ioncube_loader_win_7.4.dll}"
+        : "${IONCUBE_ZEND_MANAGER:=${BASE_PATH}/ioncube/Zend/ZendExtensionManager.dll}"
+        : "${IONCUBE_ZEND_OPTIMIZER:=${BASE_PATH}/ioncube/Zend/Optimizer}"
+        export IONCUBE_LOADER IONCUBE_ZEND_MANAGER IONCUBE_ZEND_OPTIMIZER
+fi
+
 ENCODED_FOLDER=ENCODED
 DECODED_FOLDER=DECODED
 DELETE_RAR=DECODED.rar
